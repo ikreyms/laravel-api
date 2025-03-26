@@ -3,9 +3,10 @@
 namespace App\Traits;
 
 use Hashids\Hashids;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 trait HasHashid
 {
@@ -82,10 +83,10 @@ trait HasHashid
      * @param string $hash
      * @return Model|null
      */
-    public static function findByHashid(string $hash): ?Model
+    public static function findByHashid(string $hashid): ?Model
     {
         $instance = new static;
-        $id = $instance->decodeHashid($hash);
+        $id = $instance->decodeHashid($hashid);
         if ($id) {
             return static::find($id);
         }
@@ -102,10 +103,10 @@ trait HasHashid
      * @return \Illuminate\Database\Eloquent\Model
      * @throws ModelNotFoundException if no model is found for the given hashid
      */
-    public static function findByHashidOrFail(string $hash): Model
+    public static function findByHashidOrFail(string $hashid): Model
     {
         $instance = new static;
-        $id = $instance->decodeHashid($hash);
+        $id = $instance->decodeHashid($hashid);
         if (!$id) {
             throw new ModelNotFoundException('Model not found for the provided Hashid');
         }
@@ -113,22 +114,17 @@ trait HasHashid
     }
 
     /**
-     * Finds a model by the hashid or fails using a custom column ID.
-     * 
-     * This method allows you to search for a model by its hashid and
-     * optionally specify which column to use for the ID (default is 'id').
-     * If no model is found, it throws an `InvalidArgumentException`.
+     * Scope a query to get the model with the given hashid.
      *
-     * @param string $hash
-     * @param string $columnId By default 'id' but can be different for some developers
-     * @return \Illuminate\Database\Eloquent\Builder
-     * @throws InvalidArgumentException if the hashid is invalid
+     * @param \Illuminate\Database\Eloquent\Builder $query The query builder instance.
+     * @param string $hashid The hashid to filter the model by.
+     * @return void
      */
-    public static function whereHashid(string $hash, string $columnId = 'id')
+    public function scopeOfHashid(Builder $query, string $hashid): void
     {
-        $instance = new static();
-        return $instance->where(config('hashid.field'), $hash);
+        $query->where(config('hashid.field'), $hashid);
     }
+
 
     /**
      * Get the Hashids encoder instance.
