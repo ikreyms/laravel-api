@@ -8,6 +8,7 @@ This is a custom Laravel API setup that includes essential features for building
 - **PHP 8.2** – Compatible with the latest version of PHP.
 - **Laravel 12.0** – The most recent version of Laravel.
 - **Laravel Tinker 2.10** – Interactive REPL for testing and debugging.
+- **Laravel Sanctum 4.0.8** – Lightweight API token authentication.
 - **Spatie Laravel Data 4.14** – Provides easy handling of Data Transfer Objects (DTOs) for organizing data in your API.
 - **Custom Artisan Commands** – Commands for generating DTOs and actions:
   - `php artisan make:data`
@@ -28,3 +29,41 @@ STEPS TO FOLLOW:
 	fillable array, migrations according to requirements
 - Run artisan migrate:fresh to reflect the changes in db
 
+## Installation and Setup
+
+### Step 1: Install Composer Dependencies
+
+Run the following command to install all required PHP dependencies:
+
+```bash
+composer install
+```
+
+### Step 2: Configure the .env File
+Copy the .env.example file to .env:
+
+```bash
+cp .env.example .env
+```
+
+Open the .env file and set the following configuration values:
+
+APP_NAME: Your application name.
+APP_URL: The base URL of your application.
+DB_*: Database connection details (SQLite by default, but you can switch to another database like MySQL).
+
+### Step 3: Generate App key
+```bash
+php artisan key:generate
+```
+This will set the APP_KEY in your .env file.
+
+### Step 4: Update Your User Model
+Make sure to update your User model according to your application’s requirements:
+
+Define the $fillable array to specify which attributes can be mass-assigned.
+
+### Step 5: Run Migrations
+```bash
+php artisan migrate
+```
